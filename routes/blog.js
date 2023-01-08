@@ -8,5 +8,4 @@ router.get('/get', blogcontrol.getAllblog);
 
 
 
-
-exports.blogRouter = router;
+ exports.blogRouter = router;
