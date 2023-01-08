@@ -24,8 +24,6 @@ const signup = async (req, res)=>{
         username:username
     })
 
-    const token = jwt.signin({email:result.email,id:result._id,SECRETE_KEY});
-    res.status(201).json({user:result, token:token})
 
   } catch (error) {
     console.log(error);
@@ -47,11 +45,7 @@ const existingUser = await userModel.findOne({ email: email });
                 return res.status(400).json({message:"Invalid Credential"})
             }
 
-             const token = jwt.signin({
-               email: existingUser.email,
-               id: existingUser._id,
-               SECRETE_KEY,
-             });
+            
              res.status(201).json({ user: existingUser, token: token });
 
 
