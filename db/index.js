@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 // Connecting to the database
 mongoose
-  .connect("mongodb://localhost:27017/gameDB", {
+  .connect("mongodb://localhost:27017/fmm", {
     keepAlive: true,
   })
   .then(() => {
