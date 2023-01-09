@@ -18,6 +18,6 @@ const { createTokens, validateToken } = require('./middleware');
 
 
 
-  const port = 8080;
+  const port = 6080;
   app.listen(port, () => console.log(`🚀 Listening on port ${port}...`));
  

@@ -45,7 +45,7 @@ const existingUser = await userModel.findOne({ email: email });
             }
 
             
-             res.status(201).json({ user: existingUser, token: token });
+             res.status(201).json({ user: existingUser });
 
 
         } catch (error) {
