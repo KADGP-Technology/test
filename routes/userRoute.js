@@ -2,7 +2,7 @@ const express=require("express");
 const userControl=require("../controller/User/user");
 
 const router =express.Router();
-const app = express();
+
 
 
 router.post("/signup",userControl.signup);

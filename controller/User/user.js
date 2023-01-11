@@ -6,7 +6,7 @@ const app = express();
 
 
 
-const signup = async (req, res)=>{
+exports.signup = async (req, res)=>{
   //Existing User Check
   //Hash Password
   //User creation
@@ -36,34 +36,29 @@ const signup = async (req, res)=>{
   }
 }
 
-const signin = async (req, res) => {
-        const { email, password } =
-          req.body;
-        try {
-            
-const existingUser = await userModel.findOne({ email: email });
-        if (!existingUser) {
-            return res.status(400).json({ message: "User Not Found" });
-        }
-            const matchPassword = await bcrypt.compare(password,existingUser.password)
+exports.signin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    existingUser = await userModel.findOne({ email: email });
+    if (!existingUser) {
+      return res.status(400).json({ message: "User Not Found" });
+    }
+    const matchPassword = await bcrypt.compare(password, existingUser.password);
 
-            if(!matchPassword){
-                return res.status(400).json({message:"Invalid Credential"})
-            }
+    if (!matchPassword) {
+      return res.status(400).json({ message: "Invalid Credential" });
+    }
 
-            
-             res.status(201).json({ user: existingUser });
-
-
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: "something went wrong" });
-        }
+    res.status(201).json({ user: existingUser });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "something went wrong" });
+  }
 };
 
 //  API TO display data getting from db
 
-getAlldata=(req,res)=>{
+exports.getAlldata=(req,res)=>{
   userModel.find().then((users) => {
     res.send(users);
   }).catch(err => {
@@ -75,7 +70,7 @@ getAlldata=(req,res)=>{
 
 //API To update Data in db
 
-updateData=(req,res)=>{
+exports.updateData=(req,res)=>{
   console.log(req.params.id);
     userModel.findOneAndUpdate(
       { _id: req.params.id },
@@ -105,7 +100,7 @@ updateData=(req,res)=>{
 
 
 
-module.exports = { signup, signin ,getAlldata, updateData};
+
 
 
 
