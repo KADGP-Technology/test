@@ -1,5 +1,8 @@
 const userModel=require('../../models/user')
 const bcrypt = require("bcrypt");
+const { response } = require('express');
+const express = require('express');
+const app = express();
 
 
 
@@ -8,7 +11,7 @@ const signup = async (req, res)=>{
   //Hash Password
   //User creation
   //Token generate
-  const {username, email, password}=req.body;
+  const {FirstName, LastName,ContactNumber, email, password}=req.body;
   try {
     const existingUser = await userModel.findOne({email : email});
     if (existingUser) {
@@ -18,10 +21,13 @@ const signup = async (req, res)=>{
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await userModel.create({
-        email:email,
-        password:hashedPassword,
-        username:username
-    })
+      FirstName: FirstName,
+      LastName: LastName,
+      ContactNumber:ContactNumber,
+      email: email,
+      password: hashedPassword,
+     
+    });
 
 
   } catch (error) {
@@ -31,7 +37,8 @@ const signup = async (req, res)=>{
 }
 
 const signin = async (req, res) => {
-        const {email,password}=req.body;
+        const { email, password } =
+          req.body;
         try {
             
 const existingUser = await userModel.findOne({ email: email });
@@ -54,4 +61,54 @@ const existingUser = await userModel.findOne({ email: email });
         }
 };
 
-module.exports={signup,signin}
+//  API TO display data getting from db
+
+getAlldata=(req,res)=>{
+  userModel.find().then((users) => {
+    res.send(users);
+  }).catch(err => {
+  res.status(500).send({
+  message: err.message || "Something went wrong while getting list of users."
+});
+});
+}
+
+//API To update Data in db
+
+updateData=(req,res)=>{
+  console.log(req.params.id);
+    userModel.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        $set: {
+          FirstName: req.body.FirstName,
+          LastName: req.body.LastName,
+          ContactNumber: req.body.ContactNumber,
+          email: req.body.email,
+          password:req.body.password
+        },
+      }
+    )
+    .then((result) => {
+      res.status(200).json({
+        update_data: result,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+}
+
+
+
+
+module.exports = { signup, signin ,getAlldata, updateData};
+
+
+
+
+
+
