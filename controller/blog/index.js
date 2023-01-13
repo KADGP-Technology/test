@@ -4,7 +4,7 @@ const { JSDOM } = jsdom;
 
 exports.getAllblog = (req, res) => {
     const response_data = []
-    axios.get('https://www.googleapis.com/blogger/v3/blogs/3280937189833481067/posts?key=AIzaSyAkCqqg6Okrk8b2fNfWFR5m2V25PQAqSoQ')
+    axios.get('https://www.googleapis.com/blogger/v3/blogs/3280937189833481067/posts?key=AIzaSyAsF6SsJtn09ZWtXoHKIOhZqY5jvraPH-Q')
             .then(function (response) {
                 for(var i = 0; i<response.data.items.length; i++){
                     let obj = {}
