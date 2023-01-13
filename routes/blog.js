@@ -8,5 +8,4 @@ router.get('/get', blogcontrol.getAllblog);
 router.get('/:id', blogcontrol.getDetails)
 
 
-
-exports.blogRouter = router;
+ exports.blogRouter = router;
