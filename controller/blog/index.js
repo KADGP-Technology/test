@@ -32,11 +32,11 @@ exports.getAllblog = (req, res) => {
 
 
 exports.getDetails = (req, res) => {
-  axios.get('https://www.googleapis.com/blogger/v3/blogs/3280937189833481067/posts/'+req.params.id+'?key=AIzaSyAkCqqg6Okrk8b2fNfWFR5m2V25PQAqSoQ')
+  axios.get('https://www.googleapis.com/blogger/v3/blogs/3280937189833481067/posts/'+req.params.id+'?key=AIzaSyAsF6SsJtn09ZWtXoHKIOhZqY5jvraPH-Q')
   .then(function (response) {
 if(response.data){
   let query = response.data.title.split(/\s+/).slice(0, 1).join(" ");
-  axios.get('https://www.googleapis.com/blogger/v3/blogs/3280937189833481067/posts/search?q='+query+'&key=AIzaSyAkCqqg6Okrk8b2fNfWFR5m2V25PQAqSoQ')
+  axios.get('https://www.googleapis.com/blogger/v3/blogs/3280937189833481067/posts/search?q='+query+'&key=AIzaSyAsF6SsJtn09ZWtXoHKIOhZqY5jvraPH-Q')
   .then(function (queryResponse){
     const keepReading = [];
     for(let i = 0; i<queryResponse.data.items.length; i++){
