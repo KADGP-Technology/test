@@ -7,10 +7,14 @@ const app = express();
 
 
 exports.signup = async (req, res)=>{
-  //Existing User Check
-  //Hash Password
-  //User creation
-  //Token generate
+ 
+  if(!req.body.email || req.body.email.length == 0) {res.status(201).send("please enter Email")
+return; }
+  if(!req.body.password || req.body.password.length == 0){ res.status(201).send("please enter Password")
+return; }
+  if(!req.body.ContactNumber || req.body.ContactNumber.length == 0){ res.status(201).send("please enter Number")
+return; }
+
   const {FirstName, LastName,ContactNumber, email, password}=req.body;
   try {
     const existingUser = await userModel.findOne({email : email});
@@ -29,6 +33,12 @@ exports.signup = async (req, res)=>{
      
     });
 
+  if(result){
+    res.status(200).send("sucessfully signup")
+  }
+  else{
+    res.status(201).send("please try again")
+  }
 
   } catch (error) {
     console.log(error);
@@ -37,6 +47,11 @@ exports.signup = async (req, res)=>{
 }
 
 exports.signin = async (req, res) => {
+  if(!req.body.email || req.body.email.length == 0){ res.status(201).send("please enter Email")
+return;}
+  if(!req.body.password || req.body.password.length == 0){ res.status(201).send("please enter Password")
+  return;
+}
   const { email, password } = req.body;
   try {
     existingUser = await userModel.findOne({ email: email });
@@ -46,10 +61,14 @@ exports.signin = async (req, res) => {
     const matchPassword = await bcrypt.compare(password, existingUser.password);
 
     if (!matchPassword) {
-      return res.status(400).json({ message: "Invalid Credential" });
+      return res.status(400).json({ message: "Incorrect password" });
     }
 
-    res.status(201).json({ user: existingUser });
+    res.status(200).json({ id : existingUser._id,
+                           firstname : existingUser.FirstName,
+                           lastname : existingUser.LastName,
+                           email : existingUser.email });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "something went wrong" });
@@ -58,44 +77,83 @@ exports.signin = async (req, res) => {
 
 //  API TO display data getting from db
 
-exports.getAlldata=(req,res)=>{
-  userModel.find().then((users) => {
-    res.send(users);
+exports.getUserData=(req,res)=>{
+  userModel.findById(req.params.id)
+  .then(data => {
+      if(!data) {
+          return res.status(notFound).send({
+              success: false,
+              message: "User not found with id " + req.params.id
+          });
+      }
+      res.send({
+          success: true,
+          message: 'User successfully retrieved',
+          data: data
+      });
   }).catch(err => {
-  res.status(500).send({
-  message: err.message || "Something went wrong while getting list of users."
-});
+  if(err.kind === 'ObjectId') {
+      return res.status(notFound).send({
+          success: false,
+          message: "User not found with id " + req.params.id
+      });
+  }
+  return res.status(internalServerError).send({
+      success: false,
+      message: "Error retrieving user with id " + req.params.id
+  });
 });
 }
 
 //API To update Data in db
 
-exports.updateData=(req,res)=>{
-  console.log(req.params.id);
-    userModel.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        $set: {
-          FirstName: req.body.FirstName,
-          LastName: req.body.LastName,
-          ContactNumber: req.body.ContactNumber,
-          email: req.body.email,
-          password:req.body.password
-        },
-      }
-    )
-    .then((result) => {
-      res.status(200).json({
-        update_data: result,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-      });
+exports.updateUserData = async (req,res) => {
+  if(!req.query.id){
+    res.send("send user id")
+    return;
+  }
+
+  if(!req.body.FirstName || !req.body.LastName || !req.body.email  || !req.body.ContactNumber) {
+    return res.status(201).send({
+        success: false,
+        message: "Please enter required fields"
     });
 }
+if( req.body.password ){
+const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+req.body.password = hashedPassword
+}
+// find user and update
+userModel.findByIdAndUpdate(req.query.id, {
+    $set: req.body
+}, {new: true})
+    .then(data => {
+        if(!data) {
+            return res.status(300).send({
+                success: false,
+                message: "User not found with id " + req.query.id
+            });
+        }
+        res.send({
+            success: true,
+            data: data
+        });
+    }).catch(err => {
+    if(err.kind === 'ObjectId') {
+        return res.status(300).send({
+            success: false,
+            message: "User not found with id " + req.query.id
+        });
+    }
+    return res.status(500).send({
+        success: false,
+        message: "Error updating user with id " + req.query.id
+    });
+});
+}
+
+
 
 
 

@@ -7,7 +7,7 @@ const {userRouter} = require('./userRoute');
 
 
 router.use('/blog', blogRouter)
-router.use('/users',userRouter)
+router.use('/user',userRouter)
 
 
 

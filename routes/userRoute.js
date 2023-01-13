@@ -4,11 +4,10 @@ const userControl=require("../controller/User/user");
 const router =express.Router();
 
 
-
-router.post("/signup",userControl.signup);
 router.post("/signin",userControl.signin);
-router.get("/getdata",userControl.getAlldata);
-router.put("/updatedata/:id",userControl.updateData);
+router.post("/signup",userControl.signup);
+router.get("/getdata/:id",userControl.getUserData);
+router.post("/updatedata",userControl.updateUserData);
 
 exports.userRouter=router;
 
