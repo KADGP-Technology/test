@@ -77,7 +77,7 @@ return;}
 
 //  API TO display data getting from db
 
-exports.getUserData=(req,res)=>{
+exports.getUserData = (req,res) => {
   userModel.findById(req.params.id)
   .then(data => {
       if(!data) {
